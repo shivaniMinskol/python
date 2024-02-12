@@ -1,23 +1,25 @@
 from selenium import webdriver
 import pytest
-
 driver = None
-def setup_module(module):
+@pytest.fixture(scope = 'module')
+def init_launch():
     global  driver
     driver = webdriver.Chrome()
     driver.get("https://www.google.com")
 
-def teardown_module(module):
+    yield
+    print("tear down")
     driver.quit()
 
+
+@pytest.mark.usefixtures('init_launch')
 def test_verifyTitle():
     assert driver.title == "Google"
 
+@pytest.mark.usefixtures('init_launch')
 def test_getCurrentUrl():
     assert "google" in driver.current_url
 
-print("hi hello")
-print("shivani")
-print("how r u?")
 
-print("i am from Nagpur")
+def test_getCurrentUrl2():
+    assert "https" in driver.current_url
